@@ -5,19 +5,12 @@
 <h1>Стихи</h1>
 </body>
 <head>
-<body>
+<body background = 'Снимок экрана в 2024-10-21 15-18-44.png' align='center'>
+<background-repeat: no-repeat>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title> СТИХИ </title>
 </body>
-<style>
- .a {
-    background-image: url('2311_mainfoto_03.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
-}
-</style>
 </head>
 <body>
 <p> Авторы</p>
@@ -29,6 +22,4 @@ foreach ($get_users as $us) {
 }
 ?><br><br>
 <p><a href = "http://stihi?id=new" > зарегистрироваться </a> </p>
-<p><a href = "http://stihi?controller=entry&id=key" > войти</a></p>
-</body>
-</html>
+<p><a href = "http://stihi/my_form.php" > моя страница</a> </p>

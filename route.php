@@ -23,7 +23,7 @@ require_once '/home/andrew/PHP_Progects/stihi/controllers/controller_stihi.php';
             }   
             else if (isset($get['nick'])){
                     $id = $this -> users -> getUserIdFromNick($get['nick']);
-                    header ("Location: http://stihi?controller=user&id=".$id['id']);
+                    header ("Location: http://stihi?controller=user&id=".$id);
             }
             else if($get['id']=='new'){
                 include_once '/home/andrew/PHP_Progects/stihi/views/registration_view.php';
@@ -44,11 +44,20 @@ require_once '/home/andrew/PHP_Progects/stihi/controllers/controller_stihi.php';
                 header("Location: HTTP/1.1 404 Not Found");
             }
             }
-            else if($get[controller]=='entry' & $get['id']=='key')
-            {
-            include_once '/home/andrew/PHP_Progects/stihi/views/entry_form.html';
-            }    
             else {header("Location: HTTP/1.1 404 Not Found");}
         }
+            /*else if (array_key_exists('poem_name', $post) || array_key_exists('poem_text', $post)){
+public function routForPost($post){
+        if (array_key_exists('nick', $post) || array_key_exists('password', $post) || array_key_exists('exit', $post)){
+            include_once '/home/andrew/PHP_Progects/stihi/views/enterfa/securrity.php';
+            sucurrity($post);
+        }
+        include_once '/home/andrew/PHP_Progects/stihi/controllers/controller_stihi.php';
+        $newControllerStihi = new Controller_stihi;
+        $newPoem = $newControllerStihi -> wrightPoem($id, $post['poem_name'], $post['poem_text']);
+    }   
+    else {
+        include_once '/home/andrew/PHP_Progects/stihi/views/Main_view.php';
     }
-    
+}*/
+    }

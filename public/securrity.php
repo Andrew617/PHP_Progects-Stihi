@@ -1,33 +1,25 @@
-<?php 
-$post = $_POST;
-    if (!empty($post['nick']) && !empty($post['password'])){
-        include_once '/home/andrew/PHP_Progects/stihi/controllers/controller_user.php';
+
+<?php include_once '/home/andrew/PHP_Progects/stihi/controllers/controller_user.php';
+function securrity($post){
         $a = new Controller_user;
-        $b = $a -> entry ($post['nick'], $post['password']);
-        $userId = $a -> getUserIdFromNick($post['nick']);
-        $idStr = strval($userId['id']);
-        echo $idStr;
-        if($b==TRUE){
-            session_id($idStr);
+        $b = $a -> entry ($post['nick'], $post['password']); 
+        if ($b == true){
+            $id = $a -> getUserIdFromNick($nick);
             session_start();
-            $_SESSION = ['name'=> $idStr];
-            header("Location: my_form.php");
-            exit();
+            $_SESSION['id']=$id;
+            return $_SESSION;
         }
-        else if($post=null && !empty($_SESSION['name']))
+        else if ($b == false && !empty($_POST))
         {
-        session_unset();
-        session_destroy();
-        header("Location: http://stihi");
+        exit("<script>alert('вы ввели не верный логин или пароль')</script>");    
         }
-        else if($b==FALSE){
-            echo "Вы ввели не верный логин или пароль. Пожалуйста будьте внимательнее";
-            header("Location: http://stihi/?controller=entry&id=key");
-        }
-    }
-    else
-    {
-        header("Location: http://stihi"); 
     }
 
+function entrance($post) { if($post["exit"]="leave_page" && !empty($_SESSION['id']))
+    {
+    session_unset();
+    $post == null;
+    header("Location: http://index.php");
+    } 
+}
 

@@ -8,9 +8,16 @@ function createNewPoetry($values)
     {
     $sqlCommand = "INSERT INTO poems (id, poem_name, poem_text) VALUES (:id, :poem_name, :poem_text)";
     $dbconn = Model::createOrEditEntry($sqlCommand, $values);
+    if($dbconn==true)
+    {$return = 'Ваше произведение опубликовано, поздравляем';
+    $$return = str_split($return, 82);
     }
-
-
+    else 
+    {$return = 'Сожалеем, но опубликовать произведение не удалось. Попробуйте ещё раз, либо обратитесь в службу поддержки';
+    $$return = str_split($return, 194);
+    }
+    return $$return;
+}
 function selectPoemForId($poemId)
     {
     $sqlCommand = "SELECT poems.poem_name, poems.poem_text, passwords.name, passwords.surname, passwords.nick FROM poems LEFT OUTER JOIN passwords ON poems.id = passwords.id WHERE poem_id = ?"; 
@@ -40,10 +47,3 @@ function getPoemIdFromPoemName($poemName)
     }
 
 }
-#$poemText = array('В горах моё сердце%');
-//$a = new Model_stihi;
-#$b = $a -> getAllpoemsId();
-#print_r($b);
-#$poemName = array('Тестовое');
-#$c = $a -> getPoemIdFromPoemText($poemText);
-#print_r($c);

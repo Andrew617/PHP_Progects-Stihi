@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <body background = '/home/andrew/PHP_Progects/stihi/public/images/2311_mainfoto_03.jpg'></body>
-<?php include_once '/home/andrew/PHP_Progects/stihi/controllers/controller_stihi.php';
+<?php require_once '/home/andrew/PHP_Progects/stihi/controllers/controller_stihi.php';
 $a = new Controller_stihi;
 $poemId = $get['poem_id'];
 $poem = $a -> getOnePoem($poemId);

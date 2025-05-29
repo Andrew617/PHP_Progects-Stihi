@@ -50,17 +50,18 @@ class Model {
     exit;
     }
     
-    function createOrEditEntry($sqlCommand, $values)#Создаёт или редактирует записи в БД
+    function createOrEditEntry($sqlCommand, $id, $iv)#Создаёт или редактирует записи в БД
     {
         $connect = $this -> create_new_connect();
         $newScript = $connect -> prepare($sqlCommand);
-        $result = $newScript -> execute($values);
-        return $result;
+        $newScript -> bindValue(':id', $id);
+        $newScript -> bindValue(':iv', $iv);
+        $result = $newScript -> execute();
         $connect = null;
-        $newUser = null;
+        $newScript = null;
     }
 
 }
 
-#print_r(PDO::getAvailableDrivers());   
+
 

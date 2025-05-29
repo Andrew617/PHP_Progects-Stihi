@@ -1,28 +1,17 @@
-<!DOCTIPE html>
-<?php session_start();
-setcookie($path = "~/foo/");
-if (!empty($_SESSION['name'])){
-require_once '/home/andrew/PHP_Progects/stihi/controllers/controller_user.php';
-require_once '/home/andrew/PHP_Progects/stihi/views/template_view.html';
-require_once '/home/andrew/PHP_Progects/stihi/controllers/controller_stihi.php';
-require_once '/home/andrew/PHP_Progects/stihi/views/exit_form.html'; ?> 
-<?php
-$newControllerUserObj = new Controller_user;
-$user = $newControllerUserObj -> getUserFromId($_SESSION['name']);
-$id = $_SESSION['name'];
-echo 'добро пожаловать ', $user['nick'];
-echo ' '.$name;?>
-<?php if (!empty($_POST['poem_name']) && !empty($_POST['poem_text']) && !empty($id))
-{
-    echo"<p>$_POST[poem_name]<br><br></p>";
-    echo "<pre>$_POST[poem_text]</pre>";
-    $newControllerStihi = new Controller_stihi;
-    $newPoem = $newControllerStihi -> wrightPoem($id, $_POST['poem_name'], $_POST['poem_text']);     
-    exit;
+
+<?php 
+if (empty($_COOKIE)){
+        require_once '/home/andrew/PHP_Progects/stihi/public/entry_form.html';
 }
-}
- 
 else {
-    header("Location: index.php?");}
-
-
+        require_once '/home/andrew/PHP_Progects/stihi/views/exit_form.html';
+        require_once '/home/andrew/PHP_Progects/stihi/public/template_view.html';
+        require_once '/home/andrew/PHP_Progects/stihi/controllers/controller_user.php';
+        require_once '/home/andrew/PHP_Progects/stihi/controllers/controller_stihi.php';
+        $controllerUserObj = new Controller_user;
+        $cookieToken = array_keys($_COOKIE);
+        $tokenName = $cookieToken[0];
+        $secretToken = $_COOKIE[$tokenName];
+        $token = $controllerUserObj -> getToken($secretToken);
+        echo $token; 
+}

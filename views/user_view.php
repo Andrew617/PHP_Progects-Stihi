@@ -2,15 +2,18 @@
 <head>
 <h3>Пользователь</h3>
 <meta charset="utf-8">
-<img src="2311_mainfoto_03.jpg" align="right">  
+
+<img src= "/home/andrew/PHP_Progects/stihi/public/images/30/zBscTxM0gPk.jpg"  align="right">  
 <p>
 <?php include_once '/home/andrew/PHP_Progects/stihi/controllers/controller_user.php';
 include_once '/home/andrew/PHP_Progects/stihi/controllers/controller_stihi.php';
-//include_once '/home/andrew/PHP_Progects/stihi/views/template.css';
 $a = new Controller_user;
 $b = new Controller_stihi;
+$dir = $id."/".$files['0'].PHP_EOL;
 $user = $a -> getUserFromId($get['id']);
-$poems = $b -> getAllpoemsFromUser($user['nick']);?>
+$poems = $b -> getAllpoemsFromUser($user['nick']);
+$id = $_GET['id'];
+$files = scandir("/home/andrew/PHP_Progects/stihi/public/images"."/".$id,  SCANDIR_SORT_DESCENDING);?>
 <p> Имя: <?php echo $user['name'];?><br><br>
 Фамилия: <?php echo $user['surname'];?><br><br>
 Биография:<br> <?php echo $user['biography'];?><br><br>

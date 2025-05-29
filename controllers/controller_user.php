@@ -2,13 +2,11 @@
 require_once '/home/andrew/PHP_Progects/stihi/model/model_user.php';
 class Controller_user 
 {
-    
-    public $modelUser;
-
     public function __construct()
     {
         $this -> modelUser = new Model_user;
     }
+    
     
     private function createPasswordhash($password)
     {
@@ -47,8 +45,6 @@ class Controller_user
         $dataSet = rtrim($data, ",\ ");
         return $dataSet;
     }
-          
-    
     
    private function createPDOset($biographyUpdateList) {
         if (count($biographyUpdateList) >1)
@@ -63,7 +59,6 @@ class Controller_user
         $dataSet = $this -> createDataset($biographyUpdateList);
         $PDOset = $columnSet." "."="." ".$dataSet;
         }
-        
        return $PDOset; 
     }
     
@@ -73,6 +68,60 @@ class Controller_user
             $v = 'Пользователь предпочёл удалить эти сведения';
             }
         return $v;
+    }
+    
+    private function createKeysForEncrypt()
+    {
+    $privateKey = openssl_pkey_new();
+    $publicKeyPem = openssl_pkey_get_details($privateKey)['key'];
+    $publicKey = openssl_pkey_get_public($publicKeyPem);
+    return $publicKey;
+    }
+    
+    
+    function createJSWToken($openToken, $userId)
+    {
+    $token64 = base64_encode($openToken); 
+    $cipher = 'rc4-hmac-md5';
+    $ivlen = openssl_cipher_iv_length($cipher);
+    $ivKey = openssl_cipher_iv_length($cipher);
+    $iv = openssl_random_pseudo_bytes($ivlen);
+    $key = openssl_random_pseudo_bytes($ivKey);
+    file_put_contents($userId.'-iv', $iv);
+    file_put_contents($userId.'-key', $key);
+    $encrypted_data = openssl_encrypt($token64, $cipher, $key, 0, $iv);
+    return $encrypted_data;
+}
+    
+    function decryptToken($cookieToken, $userId)
+    {
+    $cipher = 'rc4-hmac-md5'; 
+    $ivFromDecrypt = file_get_contents($userId.'-iv');
+    $keyFromDecrypt = file_get_contents($userId.'-key');
+    $cookieTokenDecode = openssl_decrypt($cookieToken, $cipher, $keyFromDecrypt, 0, $ivFromDecrypt);
+    $token = base64_decode($cookieTokenDecode);
+    return $token;
+    }
+    
+    /*function createRefreshToken()
+    {}*/
+    
+    function createOpenToken($role, $userId)
+    {
+    $array = array("role"=> $role, "userid" => $userId);
+    $openToken = json_encode($array);
+    return $openToken;    
+    }
+    
+    function getToken($cookieToken)
+    {
+    $token = $this -> decryptToken($cookieToken);
+    return $token;   
+    }
+    
+    function sendToken($openToken, $userId){
+    $token = $this -> createJSWToken($openToken, $userId);
+    return $token;
     }
     
     function createOneArrayByArrays($arr)
@@ -107,7 +156,8 @@ class Controller_user
         $nameArr = array($nick);
         $idarr = $this -> modelUser -> selectUserFromNick($nameArr);
         $id = array_merge($oneArray, ...$idarr);
-        return $id;
+        $idStr = $id['id'];
+        return $idStr;
     }
     
     function getUserFromId($id)
@@ -116,7 +166,7 @@ class Controller_user
         $idarr = array($id);
         $userArr = $this -> modelUser -> selectUserFromId($idarr);
         if (empty($userArr)){
-            header("Location: HTTP/1.1 404 Not Found");
+            echo "user not found";
         }
         else {
         $user = array_merge($oneArray, ...$userArr);
@@ -144,9 +194,17 @@ class Controller_user
         $enter = $this -> modelUser -> entry_in_page($nickArr);
         foreach ($enter as $apass){
             $hash = $apass['password'];
-            $veryfe = password_verify($password, $hash); #возможно есть решение лучше. Но работает
+            $veryfe = password_verify($password, $hash); #возможно есть решение лучше. Но работает    
         }
-        return $veryfe;    
+        switch  ($veryfe) {
+            case TRUE: 
+            $open = true;
+                break;
+            case FALSE:
+                $open = false;
+                break;
+        }
+    return $open;     
     }
 
     function createNewuser($newUser)
@@ -158,5 +216,18 @@ class Controller_user
         $placeHoldersString = $this -> getPlaceHoldersString($newUserWithoutEmpty);
         $this -> modelUser -> entryNewUser($columnSet, $newUserWithoutEmpty, $placeHoldersString);
     }
-
+    
+    
+    function addPicture(){
+        
+        switch ($cD){
+            case true: 
+        break;
+        }
+        
+    }
+   
 }
+/*$newControllerUserObj = new Controller_user;
+$id = $newControllerUserObj -> getUserIdFromNick('Mikel');
+echo $id;*/

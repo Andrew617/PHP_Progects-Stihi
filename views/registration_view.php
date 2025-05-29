@@ -15,7 +15,26 @@
     print_r($newUser);
     if (!empty($newUser)) {
         include_once '/home/andrew/PHP_Progects/stihi/controllers/controller_user.php';
+        include_once '/home/andrew/PHP_Progects/stihi/resurses.php';
         $userss = new Controller_user;
         $userss -> createNewuser($newUser); 
+        $nick = $newUser['nick'];
+        $userId = $userss -> getUserIdFromNick($nick);
+        print_r($userId);
+        $varyable = is_null($userId);
+        switch ($varyable)
+        {case false:
+            $path = '/home/andrew/PHP_Progects/stihi/public/images';
+            createDirectory($path, $userId);
+        case true: 
+            echo 'Проблема при добавлении нового пользователя';
+            die;}
     } 
-   
+//include_once '/home/andrew/PHP_Progects/stihi/controllers/controller_user.php';
+//include_once '/home/andrew/PHP_Progects/stihi/resurses.php';
+//$userss = new Controller_user;
+//$path = '/home/andrew/PHP_Progects/stihi/public/images';
+//$nick = 'Test4';
+//$userId = $userss -> getUserIdFromNick($nick); 
+//print_r($userId);
+//createDirectory($path, $userId);
