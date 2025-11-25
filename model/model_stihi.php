@@ -1,49 +1,59 @@
 <?php
-require_once '/home/andrew/PHP_Progects/stihi/model/model.php';
+include_once __DIR__.'/model.php';
+include_once __DIR__.'/modelSQLstihi.php';
 
-class Model_stihi extends Model{
+class ModelStihi extends Model{
    
-
-function createNewPoetry($values)
+public function __construct($values=null)
     {
-    $sqlCommand = "INSERT INTO poems (id, poem_name, poem_text) VALUES (:id, :poem_name, :poem_text)";
-    $dbconn = Model::createOrEditEntry($sqlCommand, $values);
-    if($dbconn==true)
-    {$return = 'Ваше произведение опубликовано, поздравляем';
-    $$return = str_split($return, 82);
+    $this -> sQLPoemObject = new ModelSQLstihi;
+    parent:: __construct($values);
+    $this -> values = $values;
     }
-    else 
-    {$return = 'Сожалеем, но опубликовать произведение не удалось. Попробуйте ещё раз, либо обратитесь в службу поддержки';
-    $$return = str_split($return, 194);
+
+
+private function getAllpoemsIdAndPoemsNameByUser()
+    {
+    $sqlObject = $this -> sQLPoemObject;
+    $sqlCommand = $sqlObject -> getAllPoemIdAndPoemNameByUser();
+    return parent::getResult($sqlCommand);
     }
-    return $$return;
+
+private function getPoem()
+    {
+    $sqlObject = $this -> sQLPoemObject;
+    $sqlCommand = $sqlObject -> getPoemNameAndTextfromPoemId();
+    return parent::getResult($sqlCommand);
+    }
+private function getAllPoemNameList($limit)
+    {
+    $sqlObject = $this -> sQLPoemObject;   
+    $sqlCommand = $sqlObject -> getListOfPoems().' '.$limit;
+    return parent::getAll($sqlCommand);
+    }
+
+public function getViewPoem($limit=null)
+    {
+    switch (is_null($limit)) 
+        {
+        case TRUE:
+        $request = $this -> values;
+        if (!empty($request['poem_id']))
+            {
+                return $this -> getPoem();
+            }
+        elseif (!empty($request['id']))
+            {
+                return $this -> getAllpoemsIdAndPoemsNameByUser();
+            }
+        break;
+        case FALSE:
+            return $this -> getAllPoemNameList($limit);
+            break;
+        }
+       
+    }
 }
-function selectPoemForId($poemId)
-    {
-    $sqlCommand = "SELECT poems.poem_name, poems.poem_text, passwords.name, passwords.surname, passwords.nick FROM poems LEFT OUTER JOIN passwords ON poems.id = passwords.id WHERE poem_id = ?"; 
-    $poem = Model::getResult($sqlCommand, $poemId);
-    return $poem;
-    }
 
-function getAllpoemsId()
-    {
-    $sqlCommand = "SELECT poem_id FROM poems";
-    $poemsId = Model::GetAll($sqlCommand);
-    return $poemsId;
-    }
-
-function getAllpoemsFromUser($nick)
-    {
-    $sqlCommand = "SELECT poem_name FROM passwords LEFT OUTER JOIN poems ON passwords.id = poems.id WHERE nick = ?";
-    $allpoems = Model::getResult($sqlCommand, $nick);
-    return $allpoems;
-    }
-
-function getPoemIdFromPoemName($poemName)
-    {
-    $sqlCommand = "SELECT poem_id FROM poems WHERE poem_name = ?";
-    $poemId = Model::getResult($sqlCommand, $poemName);
-    return $poemId;
-    }
-
-}
+/*$testObj = new ModelStihi(array('poem_id'=>21));
+var_dump($testObj -> getViewPoem());*/

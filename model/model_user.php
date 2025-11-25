@@ -1,75 +1,76 @@
 <?php
-require_once '/home/andrew/PHP_Progects/stihi/model/model.php';
+require_once __DIR__.'/model.php';
+require_once __DIR__.'/modelSQLuser.php';
 
-class Model_user extends Model {
+class Model_user extends Model 
+
+{
+     
+    public $sqlObject;
+    public $values = NULL;
     
-    
-    function selectUserFromId($id) {
-        $sqlCommand = 'SELECT nick, name, surname, profession, biography FROM passwords WHERE id = ?';
-        $selector_user = Model::getResult($sqlCommand, $id);
-        return $selector_user;
-    }
-    
-    function selectUserFromNick($nick)
+    public function __construct($values = NULL)
     {
-        $sqlCommand = 'SELECT id FROM passwords WHERE nick = ?';
-        $selector_user = Model::getResult($sqlCommand, $nick);
-        return $selector_user;
+    $this -> sqlObject = new ModelSQLuser;
+    parent:: __construct($values);
+    $this -> values = $values;
     }
     
-    function getAllUsersID(){
-        $sqlCommand = 'SELECT id FROM passwords';
-        $allUsersID = Model::GetAll($sqlCommand);
-        return $allUsersID;
-    }
-    
-    function getAllUsersNick(){
-        $sqlCommand = 'SELECT nick FROM passwords';
-        $allUsersID = Model::GetAll($sqlCommand);
-        return $allUsersID;
-    }
-    
-    function get_all_users(){
-        $sqlCommand = 'SELECT nick FROM passwords';
-        $allUsers = Model::GetAll($sqlCommand);
-        return $allUsers;
+    private function selectFromValues($sqlCommand) {
+        return parent::getResult($sqlCommand);
     }
 
-
-    function entryNewUser($columnSet, $dataset, $placeHoldersString){
-        $sqlCommand = "INSERT INTO passwords"." "."(".$columnSet.")"." "."VALUES"." ".$placeHoldersString;
-        Model::createOrEditEntry($sqlCommand, $dataset);
+    private function selectGroupUsers($sqlCommand)
+    {
+        return parent::getAll($sqlCommand);
+    }
+    
+    private static function createPasswordhash($password)
+    {
+        $hash = password_hash($password, PASSWORD_BCRYPT); 
+        return $hash;
+    }
+    
+    public function entryNewUser()
+    {
+        $userValues = $this -> values;
+        $sqlObject = $this -> sqlObject;
+        $passwordHash = self::createPasswordhash($userValues['password']); 
+        $userValues['password'] = $passwordHash;
+        $sqlCommand = $sqlObject -> createNewUser();
+        parent::createOrEditEntry($sqlCommand, $userValues);
     }
     
     
-    function updateUser($pdoSet, $id)
+    /*function updateUser($pdoSet, $id)
         {   
             $sqlCommand = "UPDATE passwords SET"." ".$pdoSet." "."WHERE id = :id";
             Model::createOrEditEntry($sqlCommand, $id);
-        }                                                        
+        }*/                                                        
 
-    function entry_in_page($nick)
-        {
-        $sqlCommand = "SELECT password FROM passwords WHERE nick = ?";
-        $userVer = Model::getResult($sqlCommand, $nick);
-        return $userVer;
-        }
-    
-    function getPassword($userId)
-    {}
-
-    
-    
-    function holdToken($userId, $iv)
+    public function requestProcessing()
     {
-    $sqlCommand = "INSERT INTO tokens ('id', 'iv') VALUES (':id', ':iv')";
-    Model::createOrEditEntry($sqlCommand, $userId, $iv);
+        $request = $this -> values;
+        $sqlObject = $this -> sqlObject;
+        if (is_null($request))
+        {
+            $sqlCommand = $sqlObject -> gelAllusersNickAndName();
+            $result = $this -> selectGroupUsers($sqlCommand);
+        }
+        else if(is_array($request))
+        {
+        $keys = array_keys($request);
+            if ($keys['0'] == 'id' && count($request) == 1)
+                {
+                $sqlCommand = $sqlObject -> getSelectUser();
+                $result = $this -> selectFromValues($sqlCommand);
+                }
+            else if ($keys['0'] == 'nick')
+            {
+            $sqlCommand = $sqlObject -> getSelectPassword();
+            $result = $this -> selectFromValues($sqlCommand);
+            } 
+        }
+    return $result;
     }
-
 }
-/*$a = new Model_user;
-//$path = "/home/andrew/PHP_Progects/stihi/public/images";
-//$a->createDirectory($path);
-$nick = array('test3');
-$password = $a -> entry_in_page($nick);
-print_r($password);*/

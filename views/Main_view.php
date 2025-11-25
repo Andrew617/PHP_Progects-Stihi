@@ -5,21 +5,33 @@
 <h1>Стихи</h1>
 </body>
 <head>
-<body background = 'Снимок экрана в 2024-10-21 15-18-44.png' align='center'>
-<background-repeat: no-repeat>
+<body>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title> СТИХИ </title>
 </body>
+<style>
+ .a {
+    background-image: url('2311_mainfoto_03.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+</style>
 </head>
 <body>
 <p> Авторы</p>
-<?php require_once '/home/andrew/PHP_Progects/stihi/controllers/controller_user.php';
-$users = new Controller_user;
-$get_users = $users -> getAllusersNick();
-foreach ($get_users as $us) {
-    echo '<a href = "http://stihi?controller=user&nick=',urlencode($us),' "> ',$us,'</a>';
+<?php include_once '/home/andrew/PHP_Progects/stihi/controllers/controller_user.php';
+$users = new ControllerUser();
+$getUsers = $users -> getView();
+foreach ($getUsers as $user) {
+    $id = $user -> id;
+    $nick = $user -> nick;
+    $name = $user -> name;
+    echo $name.'-'.' '.'<a href = "http://stihi?id='.urlencode($id).'"'.'>'.urldecode($nick).'</a>'.'<br>';
 }
 ?><br><br>
-<p><a href = "http://stihi?id=new" > зарегистрироваться </a> </p>
-<p><a href = "http://stihi/my_form.php" > моя страница</a> </p>
+<p><a href = "http://stihi/registration.php" > зарегистрироваться </a> </p>
+<p><a href = "http://stihi?controller=entry&id=key" > войти</a></p>
+</body>
+</html>

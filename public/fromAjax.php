@@ -4,19 +4,18 @@ $_SERVER['REQUEST_METHOD'] ?? 0;
 $method = $_SERVER['REQUEST_METHOD'];
 switch ($method){
 case 'GET':
-if (empty($_GET)){
-require_once '/home/andrew/PHP_Progects/stihi/controllers/controller_user.php';
-$controllerUserObj = new Controller_user;
-$users = $controllerUserObj -> getAllusersID();
-$usersFromJson = json_encode($users);
-}
-else if(!empty($_GET))
-{
-    require_once '/home/andrew/PHP_Progects/stihi/controllers/controller_stihi.php';
-    $controllerStihiObj = new Controller_stihi;
-    $poem = $controllerStihiObj -> getOnePoem($_GET['poem_id']);
-    echo $poem['1'];
-}
+if (!empty($_GET['id'])){
+require_once '/home/andrew/PHP_Progects/stihi/controllers/controller_stihi.php';
+$stihiObj = new ControllerStihi($_GET);
+$poemsByUser = $stihiObj-> getViwPoem();
+header('Content-Type: application/json');
+            echo json_encode($poemsByUser, JSON_UNESCAPED_UNICODE);
+            exit;
+        } else {
+            header('Content-Type: application/json');
+            echo json_encode(["error" => "Произведения не найдены"]);
+            exit;
+        }
 break;
 case 'POST':
     header("Content-Type: application/json");
