@@ -1,0 +1,56 @@
+<?php require_once '/home/andrew/PHP_Progects/stihi/config.php';
+class DbConnect 
+{
+    private static $host = HOST; 
+    private static $dbname=DB_NAME; 
+    private static $user=USERADMIN; 
+    private static $password=PASSWORD;
+   
+    
+    
+    function __construct(){
+        //$this -> dbConnect = pg_connect("host = {$this -> host} dbname = {$this -> dbname} user = {$this -> user} password = {$this -> password}", PGSQL_CONNECT_ASYNC);   
+    }
+
+    private static function connect(){ 
+        $connect = pg_connect(
+            "host=" .self::$host.' '.
+            "dbname=" .self::$dbname.' '.
+            "user=" .self::$user.' '.
+            "password=" .self::$password, PGSQL_CONNECT_ASYNC);
+        while (true){
+        if (pg_connect_poll($connect)===  PGSQL_POLLING_OK){
+            return $connect;
+            break;
+            }
+        else if(pg_connect_poll($connect)=== PGSQL_POLLING_FAILED){
+            error_log('неизвестная ошибка подключения к БД');
+            return false;
+            break;
+            }
+        else if($connect === false)
+            {
+            error_log('ошибка соединения с БД, возврат false вместо resource');
+            break;
+            }
+        }
+    
+    }
+
+    private static function disConnect($connect, $result){
+        pg_free_result($result);
+        pg_close($connect);
+    }
+
+    public static function connectWait(){
+        $resultConnect = self::connect();
+        return $resultConnect;
+    }
+
+    public static function connectClose($connect, $result=null){
+        self::disConnect($connect, $result);
+    }
+
+}
+ 
+
