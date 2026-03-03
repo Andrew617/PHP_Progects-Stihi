@@ -18,6 +18,4 @@ class ControllerStihi {
       }
     }
     
-   /*$testObj = new ControllerStihi(array('id'=>'25')); 
-   $poemsByUser = $testObj-> getViwPoem();
-   echo json_encode($poemsByUser, JSON_UNESCAPED_UNICODE);*/
+   

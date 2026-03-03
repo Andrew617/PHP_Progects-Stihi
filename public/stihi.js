@@ -6,22 +6,24 @@ xnl.open("POST", url)
 xnl.send();
 }
 
-async function sendRequestWithParam()// use fetch
+async function sendRequestWithValues()// use fetch
 {
 let url = new URL('http://stihi/fromAjax.php');
 url.searchParams.set([param1], [param2]);
 let response = await fetch(url);
 if (response.ok){
   let commits = await response.text();
-  let paragraphElement = document.createElement("pre", "h5");
-  let message = document.createTextNode(commits);
-  paragraphElement.appendChild(message);
-  document.body.append(paragraphElement);
+  //let paragraphElement = document.createElement("pre", "h5");
+  //let message = document.createTextNode(commits);
+  //paragraphElement.appendChild(message);
+  //document.body.append(paragraphElement);
+  return commits;
 }
 else {
   alert (response.status);
 }
 } 
+
 async function sendPOSTrequest(post)
 {
   let response = await fetch('http://stihi/fromAjax.php',{
@@ -42,3 +44,10 @@ function createObject(text){
 return textObject;
 }
 
+async function vewThatReturnSend([param1], [param2]){
+  const commits =  sendRequestWithValues([param1], [param2]);
+  let paragraphElement = document.createElement("pre", "h5");
+  let message = document.createTextNode(commits);
+  paragraphElement.appendChild(message);
+  document.body.append(paragraphElement);  
+}

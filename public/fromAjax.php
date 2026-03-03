@@ -13,7 +13,7 @@ header('Content-Type: application/json');
             exit;
         } else {
             header('Content-Type: application/json');
-            echo json_encode(["error" => "Произведения не найдены"]);
+            json_encode(["error" => "Произведения не найдены"]);
             exit;
         }
 break;

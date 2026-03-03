@@ -6,8 +6,8 @@ class Model_user extends Model
 
 {
      
-    public $sqlObject;
-    public $values = NULL;
+    private $sqlObject;
+    private $values = NULL;
     
     public function __construct($values = NULL)
     {
@@ -31,15 +31,7 @@ class Model_user extends Model
         return $hash;
     }
     
-    public function entryNewUser()
-    {
-        $userValues = $this -> values;
-        $sqlObject = $this -> sqlObject;
-        $passwordHash = self::createPasswordhash($userValues['password']); 
-        $userValues['password'] = $passwordHash;
-        $sqlCommand = $sqlObject -> createNewUser();
-        parent::createOrEditEntry($sqlCommand, $userValues);
-    }
+    
     
     
     /*function updateUser($pdoSet, $id)

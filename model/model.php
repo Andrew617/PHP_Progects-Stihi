@@ -5,8 +5,8 @@ class Model {
     private $host= HOST; 
     private $dbname=DB_NAME; 
     private $user=USER; 
-    private $password=PASSWORD;
-    public $values = NULL;
+    private $password=PASSWORDFORUSER;
+    private $values = NULL;
     
     function __construct($values = NULL)
     {

@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function()
     param1 = 'id';
     param2 = document.getElementById("id").dataset.id;    
     if(param2){
-        sendRequestWithParam(param1, param2);
+        vewThatReturnSend(param1, param2);
     
     }
     else

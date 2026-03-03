@@ -9,7 +9,7 @@ public $typ;
 public $userId;
 public $nick;
 
-function __construct($role='user', $typ ='acess', $userId, $nick)
+function __construct($role='user', $typ ='acess', $userId=null, $nick=null)
 {
 $this->role = $role;
 $this->typ = $typ;   
