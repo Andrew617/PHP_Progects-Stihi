@@ -1,36 +1,18 @@
 <?php
-require_once '/home/andrew/PHP_Progects/stihi/config.php';
+require_once __DIR__.'/dbConnectDB_with_PDO.php';
 class Model {
     
-    private $host= HOST; 
-    private $dbname=DB_NAME; 
-    private $user=USER; 
-    private $password=PASSWORDFORUSER;
-    private $values = NULL;
+    private $values = null;
     
-    function __construct($values = NULL)
-    {
-        $this -> values = $values; 
-        try 
-        { 
-        $dsn = "pgsql:host = {$this -> host}; dbname = {$this -> dbname}";
-        $options = [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_EMULATE_PREPARES => false,];
-        $this -> dbconn = new PDO ($dsn, $this -> user, $this -> password, $options);
-        }
-        catch (PDOException $e)
-        {
-        throw new Exception('ERROR');
-       
-        }
+    public function __construct($values=null){
+        $this -> values = $values;
     }
-    
     
     function getResult($sqlCommand)#возвращает результат параметризованного запроса
     { 
         $values = $this -> values;
-        $connect = $this -> dbconn;
+        $connectObj = new DbConnectWithPDO;
+        $connect = $connectObj -> connectWithDB();
         $result = $connect -> prepare($sqlCommand);
         $result -> execute($values);
         return $myData = $result -> fetchAll();
@@ -38,7 +20,8 @@ class Model {
 
    function getAll($sqlCommand) #получить все записи из БД
    {
-        $connect = $this -> dbconn;
+        $connectObj = new DbConnectWithPDO;
+        $connect = $connectObj -> connectWithDB();
         $result = $connect -> prepare($sqlCommand);
         $result -> execute();
         $allData = $result -> fetchAll(PDO::FETCH_CLASS);
@@ -48,7 +31,8 @@ class Model {
     
     function createOrEditEntry($sqlCommand, $userValues)#Создаёт или редактирует записи в БД
     {
-        $connect = $this -> dbconn;
+        $connectObj = new DbConnectWithPDO;
+        $connect = $connectObj -> connectWithDB();
         $result = $connect -> prepare($sqlCommand);
         $result -> execute($userValues);
         $newUser = $result -> fetchAll();

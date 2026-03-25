@@ -1,16 +1,13 @@
 <?php require_once '/home/andrew/PHP_Progects/stihi/config.php';
-class DbConnect 
+include_once __DIR__.'/absractConnectDB.php';
+
+class DbConnectPG extends Dbconnect
 {
     private static $host = HOST; 
     private static $dbname=DB_NAME; 
     private static $user=USERADMIN; 
     private static $password=PASSWORD;
    
-    
-    
-    function __construct(){
-        //$this -> dbConnect = pg_connect("host = {$this -> host} dbname = {$this -> dbname} user = {$this -> user} password = {$this -> password}", PGSQL_CONNECT_ASYNC);   
-    }
 
     private static function connect(){ 
         $connect = pg_connect(
@@ -51,6 +48,11 @@ class DbConnect
         self::disConnect($connect, $result);
     }
 
+    public function connectWithDB()
+    {
+        $connect = self::connect();
+        return $connect;
+    }
 }
  
 

@@ -37,7 +37,6 @@ case 'POST':
         $token = $controllerUserObj -> sendToken($openToken, $userId);
         $type = 'securityToken';
         setcookie($type.$userId, $token, time()+600, "/", "stihi", false, true);
-        //setcookie('refresh', )
         echo json_encode(
             ["message" => "Добро пожаловать, "." ".$sendData["nick"]]);
         }

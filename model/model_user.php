@@ -2,10 +2,9 @@
 require_once __DIR__.'/model.php';
 require_once __DIR__.'/modelSQLuser.php';
 
-class Model_user extends Model 
+class Model_user extends Model
 
-{
-     
+{ 
     private $sqlObject;
     private $values = NULL;
     
@@ -30,9 +29,6 @@ class Model_user extends Model
         $hash = password_hash($password, PASSWORD_BCRYPT); 
         return $hash;
     }
-    
-    
-    
     
     /*function updateUser($pdoSet, $id)
         {   
@@ -66,3 +62,7 @@ class Model_user extends Model
     return $result;
     }
 }
+
+/*$values = array("id" => 25);
+$testA = new Model_user($values);
+var_dump($testA -> requestProcessing());*/

@@ -21,15 +21,18 @@ function __construct($values=null, $role = null, $typ = null, $userId = null, $n
     $this -> nick = $nick;
     $this -> sqlModelUserObject = new ModelSQLuser;
     $this -> modelSQLstihiObject =  new ModelSQLstihi;
-    $this -> connectObj = new DbConnect;
-    //DbConnect::connectWait();
     }
 
-private function sendParamRequest($sqlCommand){
+    private function createConnectPGObj()
+    {
+        return new DbConnectPG;
+    }
+
+    private function sendParamRequest($sqlCommand){
     $values = $this -> values;
     $dataMapperObj = new DataMapper($sqlCommand);
     $sqlSendTransform = $dataMapperObj -> sqlSendTransformationsToPlaceholders();
-    $connect = DbConnect::connectWait();
+    $connect = $this -> createConnectPGObj()::connectWait();
     $sendName = "prep_" .md5($sqlSendTransform);
     $pgPrepare = pg_send_prepare($connect, $sendName, $sqlSendTransform);
     if ($pgPrepare === false)
@@ -80,13 +83,20 @@ private function sendParamRequest($sqlCommand){
     {
         usleep(50);
     }
-    $assoc = pg_fetch_assoc($resultExecute);
-    return $assoc; 
+    //$assoc = pg_fetch_all($resultExecute);
+    //DbConnectPG::connectClose($connect, $resultExecute);
+    return $resultExecute; 
 }
 
+private function processingResultExecute($sqlCommand)
+    {
+     $resultExecute = $this -> sendParamRequest($sqlCommand);
+     return pg_fetch_all($resultExecute);  
+    }
+
 public function test(){
-    $sqlCommand = $this -> sqlModelUserObject -> getSelectUser();
-    return $this -> sendParamRequest($sqlCommand);
+    $sqlCommand = $this -> modelSQLstihiObject -> getAllPoemIdAndPoemNameByUser();
+    return $this -> processingResultExecute($sqlCommand);
 }
 }
 
@@ -100,7 +110,7 @@ public function test(){
         parent::createOrEditEntry($sqlCommand, $userValues);
     }*/
     
-    $values = array("id" => 1);
+    $values = array("id" => 25);
     $a = new ModelAdmin($values);
     $b = $a->test();
     var_dump($b);

@@ -2,7 +2,7 @@
 include_once __DIR__.'/model.php';
 include_once __DIR__.'/modelSQLstihi.php';
 
-class ModelStihi extends Model{
+class ModelStihi {
    
 public function __construct($values=null)
     {
