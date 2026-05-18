@@ -1,68 +1,54 @@
 <?php
-require_once __DIR__.'/model.php';
-require_once __DIR__.'/modelSQLuser.php';
 
-class Model_user extends Model
-
+class Model_user
 { 
-    private $sqlObject;
-    private $values = NULL;
+    private $modelSQLuser;
+    private $model;
     
-    public function __construct($values = NULL)
+    public function __construct(object $modelSQLuser, object $model)
     {
-    $this -> sqlObject = new ModelSQLuser;
-    parent:: __construct($values);
-    $this -> values = $values;
+        $this -> modelSQLuser = $modelSQLuser;//содержит sql запросы 
+        $this -> model = $model;//реализует sql запрос
+       
     }
     
-    private function selectFromValues($sqlCommand) {
-        return parent::getResult($sqlCommand);
+    public function requestProcessing($request=null)
+    {
+        if (empty($request))
+        {
+            $sqlCommand = $this->modelSQLuser->getAllusersNickAndName();
+            $result = $this -> selectFromValues($sqlCommand, array('lastid'=>10));
+        }
+        else
+        {
+            switch (key($request)) {
+                case 'id': 
+                $sqlCommand = $this->modelSQLuser->getSelectUser();
+                $result = $this -> selectFromValues($sqlCommand, $request);
+                break;
+                case 'lastid': 
+                $sqlCommand = $this->modelSQLuser->getAllusersNickAndName();
+                $result = $this -> selectFromValues($sqlCommand, $request);
+                break;
+            }   
+        }
+        return $result;
+    }
+    private function selectFromValues(string $sqlCommand, array $values) {
+        return $this -> model -> getResult($sqlCommand, $values);
     }
 
-    private function selectGroupUsers($sqlCommand)
-    {
-        return parent::getAll($sqlCommand);
-    }
+    /*private function selectGroupUsers()
+    { 
+        //$sqlCommandAfterProcessing = $this -> dataMapper -> sqlSendTransformationsToPlaceholders();
+        return $this -> model -> getResult($sqlCommandAfterProcessing);
+    }*/
     
     private static function createPasswordhash($password)
     {
         $hash = password_hash($password, PASSWORD_BCRYPT); 
         return $hash;
     }
+                                                    
     
-    /*function updateUser($pdoSet, $id)
-        {   
-            $sqlCommand = "UPDATE passwords SET"." ".$pdoSet." "."WHERE id = :id";
-            Model::createOrEditEntry($sqlCommand, $id);
-        }*/                                                        
-
-    public function requestProcessing()
-    {
-        $request = $this -> values;
-        $sqlObject = $this -> sqlObject;
-        if (is_null($request))
-        {
-            $sqlCommand = $sqlObject -> gelAllusersNickAndName();
-            $result = $this -> selectGroupUsers($sqlCommand);
-        }
-        else if(is_array($request))
-        {
-        $keys = array_keys($request);
-            if ($keys['0'] == 'id' && count($request) == 1)
-                {
-                $sqlCommand = $sqlObject -> getSelectUser();
-                $result = $this -> selectFromValues($sqlCommand);
-                }
-            else if ($keys['0'] == 'nick')
-            {
-            $sqlCommand = $sqlObject -> getSelectPassword();
-            $result = $this -> selectFromValues($sqlCommand);
-            } 
-        }
-    return $result;
-    }
 }
-
-/*$values = array("id" => 25);
-$testA = new Model_user($values);
-var_dump($testA -> requestProcessing());*/

@@ -1,50 +1,27 @@
 <?php
-include_once __DIR__.'/model.php';
-include_once __DIR__.'/modelSQLstihi.php';
-
 class ModelStihi {
    
-public function __construct($values=null)
+private $modelSqlstihi;
+private $model;
+
+public function __construct(object $modelSqlstihi, object $model)
     {
-    $this -> sQLPoemObject = new ModelSQLstihi;
-    parent:: __construct($values);
-    $this -> values = $values;
+    $this -> modelSqlstihi = $modelSqlstihi;
+    $this ->model = $model;
     }
 
-
-private function getAllpoemsIdAndPoemsNameByUser()
-    {
-    $sqlObject = $this -> sQLPoemObject;
-    $sqlCommand = $sqlObject -> getAllPoemIdAndPoemNameByUser();
-    return parent::getResult($sqlCommand);
-    }
-
-private function getPoem()
-    {
-    $sqlObject = $this -> sQLPoemObject;
-    $sqlCommand = $sqlObject -> getPoemNameAndTextfromPoemId();
-    return parent::getResult($sqlCommand);
-    }
-private function getAllPoemNameList($limit)
-    {
-    $sqlObject = $this -> sQLPoemObject;   
-    $sqlCommand = $sqlObject -> getListOfPoems().' '.$limit;
-    return parent::getAll($sqlCommand);
-    }
-
-public function getViewPoem($limit=null)
+    public function getViewPoem($values, $limit=null)
     {
     switch (is_null($limit)) 
         {
         case TRUE:
-        $request = $this -> values;
-        if (!empty($request['poem_id']))
+        if (!empty($values['poem_id']))
             {
-                return $this -> getPoem();
+                return $this -> getPoem($values);
             }
-        elseif (!empty($request['id']))
+        elseif (!empty($values['id']))
             {
-                return $this -> getAllpoemsIdAndPoemsNameByUser();
+                return $this -> getAllpoemsIdAndPoemsNameByUser($values);
             }
         break;
         case FALSE:
@@ -53,7 +30,35 @@ public function getViewPoem($limit=null)
         }
        
     }
+
+private function getAllpoemsIdAndPoemsNameByUser(array $values)
+    {
+    $sqlCommand = $this -> modelSqlstihi -> getAllPoemIdAndPoemNameByUser();
+    return $this-> model -> getResult($sqlCommand, $values);
+    }
+
+private function getPoem(array $values)
+    {
+    $sqlCommand = $this -> modelSqlstihi -> getPoemNameAndTextfromPoemId();
+    return $this-> model -> getResult($sqlCommand, $values);
+    }
+
+private function getAllPoemNameList($limit)
+    {
+    $sqlObject = $this -> sQLPoemObject;   
+    $sqlCommand = $sqlObject -> getListOfPoems().' '.$limit;
+    return parent::getAll($sqlCommand);
+    }
 }
 
-/*$testObj = new ModelStihi(array('poem_id'=>21));
-var_dump($testObj -> getViewPoem());*/
+
+/*$model = new Model;
+$modelSqlstihi = new ModelSQLstihi;
+$testObj = new ModelStihi($modelSqlstihi, $model);
+$id = array('id'=>'25');
+$test = $testObj -> getViewPoem($id);
+foreach($test as $oneString)
+{
+    echo $oneString -> poem_name;
+    echo $oneString -> poem_id;
+}*/

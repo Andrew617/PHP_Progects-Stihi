@@ -5,8 +5,14 @@ $method = $_SERVER['REQUEST_METHOD'];
 switch ($method){
 case 'GET':
 if (!empty($_GET['id'])){
-require_once '/home/andrew/PHP_Progects/stihi/controllers/controller_stihi.php';
-$stihiObj = new ControllerStihi($_GET);
+include_once '/home/andrew/PHP_Progects/stihi/controllers/controller_stihi.php';
+include_once '/home/andrew/PHP_Progects/stihi/model/model.php';
+include_once '/home/andrew/PHP_Progects/stihi/model/modelSQLuser.php';
+include_once '/home/andrew/PHP_Progects/stihi/model/model_stihi.php';
+$model = new Model;
+$modelSQL = new ModelSQLstihi;
+$modelStihiObj = new ModelStihi($modelSQL, $model);
+$stihiObj = new ControllerStihi();
 $poemsByUser = $stihiObj-> getViwPoem();
 header('Content-Type: application/json');
             echo json_encode($poemsByUser, JSON_UNESCAPED_UNICODE);

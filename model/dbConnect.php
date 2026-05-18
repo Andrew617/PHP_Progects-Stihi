@@ -34,8 +34,7 @@ class DbConnectPG extends Dbconnect
     
     }
 
-    private static function disConnect($connect, $result){
-        pg_free_result($result);
+    private static function disConnect($connect){
         pg_close($connect);
     }
 
@@ -48,10 +47,9 @@ class DbConnectPG extends Dbconnect
         self::disConnect($connect, $result);
     }
 
-    public function connectWithDB()
+    public function __destruct()
     {
-        $connect = self::connect();
-        return $connect;
+        pg_close(self::connect());
     }
 }
  

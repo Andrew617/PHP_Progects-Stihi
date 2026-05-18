@@ -1,28 +1,35 @@
 <?php
-include_once '/home/andrew/PHP_Progects/stihi/model/model_user.php';
 
 class ControllerUser 
 {
+    
+    private $modelUser;
+    
+    public function __construct(object $modelUser)
+    {
+        $this -> modelUser = $modelUser;
+    }
+    
+    
+    
+    public function getObjectUsers($request=null)
+    {
+        $data = $this -> getData($request);
+        foreach($data as $dat)
+        {
+            $dat;  
+        }
+        yield $dat;
+    }
 
-    public function __construct($userValues = NULL)
+    private function getData($request=null)
     {
-            $this -> modelUser = new Model_user($userValues);
-            $this -> values = $userValues;   
+    return $this -> modelUser -> requestProcessing($request);
     }
-    
-    public function createNewUser()
-    {  
-        $modelUser = $this -> modelUser;
-        $newUser = $modelUser -> entryNewUser();
-        return $newUser;
-    }
-    
-    public function getView()
-    {
-        $modelUser = $this -> modelUser;
-        $userResult = $modelUser -> requestProcessing();    
-        return new ArrayObject($userResult, ArrayObject::ARRAY_AS_PROPS);      
-    }       
-    
-    }
+
+}
+
+
+
+
 

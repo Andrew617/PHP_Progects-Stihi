@@ -21,9 +21,7 @@
 </head>
 <body>
 <p> Авторы</p>
-<?php include_once '/home/andrew/PHP_Progects/stihi/controllers/controller_user.php';
-$users = new ControllerUser();
-$getUsers = $users -> getView();
+<?php
 foreach ($getUsers as $user) {
     $id = $user -> id;
     $nick = $user -> nick;
